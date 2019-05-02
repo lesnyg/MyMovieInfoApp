@@ -1,9 +1,5 @@
 package com.lesnyg.mymovieinfoapp.ui;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,20 +8,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.TaskStackBuilder;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.lesnyg.mymovieinfoapp.MainActivity;
+import com.lesnyg.mymovieinfoapp.DetailActivity;
 import com.lesnyg.mymovieinfoapp.adapter.MovieRecyclerAdapter;
 import com.lesnyg.mymovieinfoapp.MovieViewModel;
 import com.lesnyg.mymovieinfoapp.R;
@@ -38,7 +32,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-public class MovieGridFragment extends Fragment {
+public class MovieGridFragment extends Fragment implements MovieRecyclerAdapter.OnMovieClickListener {
     private static final String ARG_MVIMAGE = "movieImage";
     private static final String ARG_MVTITLE = "movieTitle";
 
@@ -54,16 +48,24 @@ public class MovieGridFragment extends Fragment {
 
 
     public MovieGridFragment() {
-        // Required empty public constructor
+        setHasOptionsMenu(true);
     }
 
-    public static MovieGridFragment newInstance() {
+    public static MovieGridFragment newInstance(Result result) {
         MovieGridFragment fragment = new MovieGridFragment();
         Bundle bundle = new Bundle();
         fragment.setArguments(bundle);
         return fragment;
     }
 
+    public static MovieGridFragment newInstance() {
+        
+        Bundle args = new Bundle();
+        
+        MovieGridFragment fragment = new MovieGridFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,6 +124,8 @@ public class MovieGridFragment extends Fragment {
 
         });
 
+        mAdapter.setOnMovieClickListener(this);
+
         SearchView searchView = view.findViewById(R.id.search_view);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -177,7 +181,7 @@ public class MovieGridFragment extends Fragment {
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu item) {
 //        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.menu, item);
+//        inflater.inflate(R.bottom_main.bottom_main, item);
 //        return true;
 //    }
 
@@ -185,17 +189,20 @@ public class MovieGridFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu, menu);
+        inflater.inflate(R.menu.sort_menu, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_favorite:
-
+            case R.id.action_upcomming:
+                mModel.fetchUpComing();
                 return true;
-            case R.id.action_home:
-
+            case R.id.action_date:
+                sorting();
+                return true;
+            case R.id.action_popular:
+                mModel.fetchPopular();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -212,6 +219,14 @@ public class MovieGridFragment extends Fragment {
         });
 
         mAdapter.setitems(resultList);
+    }
+
+    @Override
+    public void onMovieClick(Result result) {
+        Toast.makeText(requireActivity(), "잘 눌림", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(requireActivity(), DetailActivity.class);
+        intent.putExtra("result",result);
+        startActivity(intent);
     }
 
     interface OnItemClickListener {

@@ -17,11 +17,11 @@
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation_sort"
+        android:id="@+id/bottom_navigation_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="#C21A5C"
         app:layout_behavior=".Behavior.BottomNavigationViewBehavior"
-        app:menu="@menu/bottom_sort_menu" />
+        app:menu="@menu/bottom_main" />
 </LinearLayout>

@@ -8,11 +8,7 @@
         android:icon="@drawable/ic_favorite_white_24dp"
         android:title="favorites"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_favoriteslist"
-        android:icon="@drawable/ic_star_white_24dp"
-        android:title="favoriteslist"
-        app:showAsAction="ifRoom" />
+
     <item
         android:id="@+id/action_sharing"
         android:enabled="true"
