@@ -1,6 +1,11 @@
 package com.lesnyg.mymovieinfoapp.ui;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,7 +17,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.TaskStackBuilder;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -20,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.lesnyg.mymovieinfoapp.DetailActivity;
+import com.lesnyg.mymovieinfoapp.MainActivity;
 import com.lesnyg.mymovieinfoapp.adapter.MovieRecyclerAdapter;
 import com.lesnyg.mymovieinfoapp.MovieViewModel;
 import com.lesnyg.mymovieinfoapp.R;
@@ -178,12 +187,6 @@ public class MovieGridFragment extends Fragment implements MovieRecyclerAdapter.
 //        mNotificationManager.notify(1, mBuilder.build());
 //    }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu item) {
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.bottom_main.bottom_main, item);
-//        return true;
-//    }
 
 
     @Override
@@ -223,7 +226,6 @@ public class MovieGridFragment extends Fragment implements MovieRecyclerAdapter.
 
     @Override
     public void onMovieClick(Result result) {
-        Toast.makeText(requireActivity(), "잘 눌림", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(requireActivity(), DetailActivity.class);
         intent.putExtra("result",result);
         startActivity(intent);

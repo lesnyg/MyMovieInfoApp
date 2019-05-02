@@ -87,7 +87,7 @@ public class MovieDetailFragment extends Fragment {
         TextView titleText = view.findViewById(R.id.textView_title);
         titleText.setText(mResult.getTitle());
         TextView dateText = view.findViewById(R.id.textView_releasedate);
-        dateText.setText("상영일 : " + mResult.getRelease_date());
+        dateText.setText("개봉일 : " + mResult.getRelease_date());
         TextView overViewText = view.findViewById(R.id.textView_overview);
         overViewText.setText(mResult.getOverview());
 
@@ -104,8 +104,7 @@ public class MovieDetailFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.action_favorite:
-                MovieFavoriteAdapter adapter = new MovieFavoriteAdapter();
+            case R.id.action_favorites:
                 mModel.addFavorit(mResult);
                 return true;
             case R.id.action_sharing:

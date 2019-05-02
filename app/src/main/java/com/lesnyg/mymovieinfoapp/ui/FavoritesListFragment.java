@@ -1,5 +1,6 @@
 package com.lesnyg.mymovieinfoapp.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.lesnyg.mymovieinfoapp.DetailActivity;
 import com.lesnyg.mymovieinfoapp.adapter.MovieFavoriteAdapter;
 import com.lesnyg.mymovieinfoapp.MovieViewModel;
 import com.lesnyg.mymovieinfoapp.R;
@@ -21,7 +23,7 @@ import com.lesnyg.mymovieinfoapp.models.Result;
 import java.util.List;
 
 
-public class FavoritesListFragment extends Fragment {
+public class FavoritesListFragment extends Fragment implements MovieFavoriteAdapter.OnFavoriteClickListener {
 
     private Result mResult;
 
@@ -90,10 +92,18 @@ public class FavoritesListFragment extends Fragment {
         viewModel.result.observe(requireActivity(), (List<Result> items) -> {
             adapter.updateItems(items);
         });
+
+        adapter.setOnFavoriteClickListener(this);
     }
 
 
+    @Override
+    public void onFavoriteClick(Result item) {
+        Intent intent = new Intent(requireActivity(), DetailActivity.class);
+        intent.putExtra("result",mResult);
+        startActivity(intent);
     }
+}
 
 
 
