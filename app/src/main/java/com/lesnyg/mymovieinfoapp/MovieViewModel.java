@@ -27,18 +27,18 @@ public class MovieViewModel extends AndroidViewModel {
 
     private static final String MY_KEY = "0882850438bd0da4458576be7d4a447c";
     private static final String MY_COUNTRY = "ko-KR";
-    public MutableLiveData<List<Result>> favoritList = new MutableLiveData<>();
+    public List<Result> results;    //
     private List<Result> mResults = new ArrayList<>();
     public int currentPage = 1;
 
     // 즐겨찾기
     public LiveData<List<Result>> result;
     public AppDatabase mDb;
-     private Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.themoviedb.org/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-     private MovieService service = retrofit.create(MovieService.class);
+    private Retrofit retrofit = new Retrofit.Builder()
+            .baseUrl("https://api.themoviedb.org/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+    private MovieService service = retrofit.create(MovieService.class);
 
     public MovieViewModel(@NonNull Application application) {
         super(application);
@@ -46,31 +46,17 @@ public class MovieViewModel extends AndroidViewModel {
                 AppDatabase.class, "database-name")
                 .allowMainThreadQueries()   // MainThread에서 DB 사용 가능
                 .build();
-
-        result = mDb.resultDao().getAll();
-
+            result = mDb.resultDao().getAll();
+//        filteredResult.setValue(mDb.resultDaao().getAll().getValue());
+        results = mDb.resultDao().getAll().getValue();
     }
 
 
-    public void fetchUpComing(){
-         service.getUpComing(MY_KEY, MY_COUNTRY).enqueue(new Callback<Search>() {
-             @Override
-             public void onResponse(Call<Search> call, Response<Search> response) {
-                 if(response.body() != null) {
-                     filteredResult.setValue(response.body().getResults());
-                 }
-             }
-             @Override
-             public void onFailure(Call<Search> call, Throwable t) {
-
-             }
-         });
-     }
-     public  void fetchPopular(){
-        service.getPopular(MY_KEY,MY_COUNTRY).enqueue(new Callback<Search>() {
+    public void fetchUpComing() {
+        service.getUpComing(MY_KEY, MY_COUNTRY).enqueue(new Callback<Search>() {
             @Override
             public void onResponse(Call<Search> call, Response<Search> response) {
-                if(response.body() != null) {
+                if (response.body() != null) {
                     filteredResult.setValue(response.body().getResults());
                 }
             }
@@ -80,32 +66,13 @@ public class MovieViewModel extends AndroidViewModel {
 
             }
         });
-     }
-     public void fetchPopular(int page){
-         service.getPopular(MY_KEY,MY_COUNTRY,page).enqueue(new Callback<Search>() {
-             @Override
-             public void onResponse(Call<Search> call, Response<Search> response) {
-                 if(response.body() != null) {
-                     List<Result> newList = new ArrayList<>();
-                     filteredResult.setValue(response.body().getResults());
-                     newList.addAll(filteredResult.getValue());
+    }
 
-                 }
-                 currentPage = page;
-             }
-
-             @Override
-             public void onFailure(Call<Search> call, Throwable t) {
-
-             }
-         });
-     }
-
-     public void fetchSearch(String quary){
-        service.getSearch(MY_KEY,quary,MY_COUNTRY).enqueue(new Callback<Search>() {
+    public void fetchPopular() {
+        service.getPopular(MY_KEY, MY_COUNTRY).enqueue(new Callback<Search>() {
             @Override
             public void onResponse(Call<Search> call, Response<Search> response) {
-                if(response.body() != null) {
+                if (response.body() != null) {
                     filteredResult.setValue(response.body().getResults());
                 }
             }
@@ -115,14 +82,66 @@ public class MovieViewModel extends AndroidViewModel {
 
             }
         });
-     }
+    }
 
-     //즐겨찾기 추가하기
-     public void addFavorit(Result result){
-         mDb.resultDao().insertFavorite(result);
-     }
-     //즐겨찾기 삭제하기
-     public void deleteFavorit(Result result){
-         mDb.resultDao().deleteFavorite(result);
-     }
+    public void fetchPopular(int page) {
+        service.getPopular(MY_KEY, MY_COUNTRY, page).enqueue(new Callback<Search>() {
+            @Override
+            public void onResponse(Call<Search> call, Response<Search> response) {
+                if (response.body() != null) {
+                    List<Result> newList = new ArrayList<>();
+                    filteredResult.setValue(response.body().getResults());
+                    newList.addAll(filteredResult.getValue());
+
+                }
+                currentPage = page;
+            }
+
+            @Override
+            public void onFailure(Call<Search> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void fetchSearch(String quary) {
+        service.getSearch(MY_KEY, quary, MY_COUNTRY).enqueue(new Callback<Search>() {
+            @Override
+            public void onResponse(Call<Search> call, Response<Search> response) {
+                if (response.body() != null) {
+                    filteredResult.setValue(response.body().getResults());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Search> call, Throwable t) {
+
+            }
+        });
+    }
+
+
+    //즐겨찾기 추가하기
+    public void addFavorite(Result result) {
+        mDb.resultDao().insertFavorite(result);
+    }
+
+    //즐겨찾기 삭제하기
+    public void deleteFavorite(Result result) {
+        mDb.resultDao().deleteFavorite(result);
+    }
+
+    //즐겨찾기 값 가져오기
+    public void searchFavorite(String s) {
+        List<Result> filteredList = new ArrayList<>();
+        for (int i = 0; i < results.size(); i++) {
+            Result result = results.get(i);
+            if (result.getTitle().toLowerCase().trim()
+                    .contains(s.toLowerCase().trim())) {
+                filteredList.add(result);
+            }
+        }
+        filteredResult.setValue(filteredList);
+    }
 }
+
