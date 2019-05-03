@@ -118,16 +118,28 @@ public class MovieGridFragment extends Fragment implements MovieRecyclerAdapter.
         List<Result> notiResult = new ArrayList<>();
         for (int i = 0; i < notiResult.size(); i++) {
             Result result = notiResult.get(i);
-            if (Integer.valueOf(result.getRelease_date()) > Integer.valueOf(today)) {
-//                noti();
+            if (Integer.parseInt(result.getRelease_date())>Integer.parseInt(today)) {
+                noti();
             }
         }
+
+        mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                boolean isScrollable = recyclerView.canScrollVertically(1);
+
+                if (!isScrollable) {
+                    mModel.fetchPopular(mModel.currentPage + 1);
+                }
+            }
+        });
         mModel.filteredResult.observe(this, new Observer<List<Result>>() {
             @Override
             public void onChanged(List<Result> results) {
                 mAdapter.setitems(results);
                 mRecycler.setAdapter(mAdapter);
                 mSwipeRefreshLayout.setRefreshing(false);
+
 
             }
 
@@ -161,31 +173,31 @@ public class MovieGridFragment extends Fragment implements MovieRecyclerAdapter.
 
     }
 
-//    public void noti() {
-//        NotificationCompat.Builder mBuilder =
-//                new NotificationCompat.Builder(requireActivity(), "default")
-//                        .setSmallIcon(R.drawable.ic_notifications_none_black_24dp)
-//                        .setContentTitle("New Movie")
-//                        .setContentText("개봉 예정인 영화가 있습니다.")
-//                        .setAutoCancel(true);
-//
-//        Intent resultIntent = new Intent(requireActivity(), MainActivity.class);
-//
-//        TaskStackBuilder stackBuilder = TaskStackBuilder.create(requireActivity());
-//        stackBuilder.addParentStack(MainActivity.class);
-//        stackBuilder.addNextIntent(resultIntent);
-//        PendingIntent resultPendingIntent =
-//                stackBuilder.getPendingIntent(
-//                        0,
-//                        PendingIntent.FLAG_UPDATE_CURRENT
-//                );
-//        mBuilder.setContentIntent(resultPendingIntent);
-//        NotificationManager mNotificationManager =
-//                (NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
-//        mNotificationManager.createNotificationChannel(new NotificationChannel("default", "기본채널",
-//                NotificationManager.IMPORTANCE_DEFAULT));
-//        mNotificationManager.notify(1, mBuilder.build());
-//    }
+    public void noti() {
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(requireActivity(), "default")
+                        .setSmallIcon(R.drawable.ic_notifications_none_black_24dp)
+                        .setContentTitle("New Movie")
+                        .setContentText("오늘 개봉 예정인 영화가 있습니다.")
+                        .setAutoCancel(true);
+
+        Intent resultIntent = new Intent(requireActivity(), MainActivity.class);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(requireActivity());
+        stackBuilder.addParentStack(MainActivity.class);
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
+        NotificationManager mNotificationManager =
+                (NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.createNotificationChannel(new NotificationChannel("default", "기본채널",
+                NotificationManager.IMPORTANCE_DEFAULT));
+        mNotificationManager.notify(1, mBuilder.build());
+    }
 
 
 
@@ -210,6 +222,8 @@ public class MovieGridFragment extends Fragment implements MovieRecyclerAdapter.
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 
     public void sorting() {
         List<Result> resultList = new ArrayList<>();

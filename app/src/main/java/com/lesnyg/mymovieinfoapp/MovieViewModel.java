@@ -29,6 +29,7 @@ public class MovieViewModel extends AndroidViewModel {
     private static final String MY_COUNTRY = "ko-KR";
     public MutableLiveData<List<Result>> favoritList = new MutableLiveData<>();
     private List<Result> mResults = new ArrayList<>();
+    public int currentPage = 1;
 
     // 즐겨찾기
     public LiveData<List<Result>> result;
@@ -79,6 +80,25 @@ public class MovieViewModel extends AndroidViewModel {
 
             }
         });
+     }
+     public void fetchPopular(int page){
+         service.getPopular(MY_KEY,MY_COUNTRY,page).enqueue(new Callback<Search>() {
+             @Override
+             public void onResponse(Call<Search> call, Response<Search> response) {
+                 if(response.body() != null) {
+                     List<Result> newList = new ArrayList<>();
+                     filteredResult.setValue(response.body().getResults());
+                     newList.addAll(filteredResult.getValue());
+
+                 }
+                 currentPage = page;
+             }
+
+             @Override
+             public void onFailure(Call<Search> call, Throwable t) {
+
+             }
+         });
      }
 
      public void fetchSearch(String quary){
