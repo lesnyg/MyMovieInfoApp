@@ -1,35 +1,41 @@
 package com.lesnyg.mymovieinfoapp;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.RingtoneManager;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-public class NotiUtil {
+public class NotificationUtil {
     public static void showNotification(Context context, String content, int id) {
         Intent intent = new Intent(context, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-//        String notiTime = new SimpleDateFormat("yyyy-MM-dd hh:mm").format(date * 1000L);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "default")
-                .setSmallIcon(R.drawable.ic_notifications_white_24dp)
-                .setContentTitle("미 개봉 영화 알림")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("영화 알림")
                 .setContentText(content)
+                .setSound(RingtoneManager.getActualDefaultRingtoneUri(context, RingtoneManager.TYPE_NOTIFICATION))
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText(content))
-                .setSound(RingtoneManager.getActualDefaultRingtoneUri(context, RingtoneManager.TYPE_NOTIFICATION))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent)
+                .setColor(Color.RED)
                 .setAutoCancel(true);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.notify(1, builder.build());
+//        NotificationManager mNotificationManager =
+//                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+//        mNotificationManager.createNotificationChannel(new NotificationChannel("default", "기본채널",
+//                NotificationManager.IMPORTANCE_DEFAULT));
+//        mNotificationManager.notify(1, builder.build());
 
-        // notificationId is a unique int for each notification that you must define
-        notificationManager.notify(id, builder.build());
     }
 }
-

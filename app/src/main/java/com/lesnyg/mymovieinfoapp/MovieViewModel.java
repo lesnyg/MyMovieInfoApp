@@ -47,8 +47,6 @@ public class MovieViewModel extends AndroidViewModel {
                 .allowMainThreadQueries()   // MainThread에서 DB 사용 가능
                 .build();
             result = mDb.resultDao().getAll();
-//        filteredResult.setValue(mDb.resultDaao().getAll().getValue());
-        results = mDb.resultDao().getAll().getValue();
     }
 
 

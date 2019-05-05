@@ -1,8 +1,7 @@
 package com.lesnyg.mymovieinfoapp.ui;
 
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -19,23 +18,23 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.TaskStackBuilder;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.lesnyg.mymovieinfoapp.AlarmHATT;
-import com.lesnyg.mymovieinfoapp.DetailActivity;
-import com.lesnyg.mymovieinfoapp.MainActivity;
+import com.lesnyg.mymovieinfoapp.AlarmReceiver;
 import com.lesnyg.mymovieinfoapp.MovieViewModel;
 import com.lesnyg.mymovieinfoapp.R;
 import com.lesnyg.mymovieinfoapp.adapter.MovieFavoriteAdapter;
 import com.lesnyg.mymovieinfoapp.models.Result;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+
+import static android.content.Context.ALARM_SERVICE;
 
 
 /**
@@ -43,7 +42,7 @@ import java.util.Date;
  */
 public class MovieDetailFragment extends Fragment {
 
-    private Result mResult ;
+    private Result mResult;
     private MovieViewModel mModel;
     RecyclerView mRecycler;
     MovieFavoriteAdapter mAdapter;
@@ -72,9 +71,9 @@ public class MovieDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view;
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             view = inflater.inflate(R.layout.fragment_movie_detail, container, false);
-        }else{
+        } else {
             view = inflater.inflate(R.layout.fragment_movie_detail2, container, false);
         }
         return view;
@@ -108,13 +107,13 @@ public class MovieDetailFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.detail_menu,menu);
+        inflater.inflate(R.menu.detail_menu, menu);
         onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_favorites:
                 mModel.addFavorite(mResult);
                 return true;
@@ -127,15 +126,13 @@ public class MovieDetailFragment extends Fragment {
                 startActivity(chooser);
                 return true;
             case R.id.action_noti:
-//                new AlarmHATT(getView().getContext()).Alarm();
-                noti();
+                alarm();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public void onPrepareOptionsMenu(Menu menu)
-    {
+    public void onPrepareOptionsMenu(Menu menu) {
         long now = System.currentTimeMillis();
         Date date = new Date(now);
         SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy-MM-dd");
@@ -144,62 +141,22 @@ public class MovieDetailFragment extends Fragment {
 
         MenuItem register = menu.findItem(R.id.action_noti);
 
-        if(upcommingDate.compareTo(currentDate) < 0){
+        if (upcommingDate.compareTo(currentDate) < 0) {
             register.setVisible(false);
-        } else{
+        } else {
             register.setVisible(true);
         }
     }
 
-    public void noti() {
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//        Date strDate = sdf.parse(mResult.getRelease_date());
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(requireActivity(), "default")
-                        .setSmallIcon(R.drawable.ic_notifications_none_black_24dp)
-                        .setContentTitle("New Movie")
-                        .setContentText("오늘 개봉 예정인 영화가 있습니다.")
-                        .setAutoCancel(true);
 
-        Intent resultIntent = new Intent(requireActivity(), DetailActivity.class);
+    private void alarm(){
+        AlarmManager alarm_manager = (AlarmManager) requireContext().getSystemService(ALARM_SERVICE);
+        Intent intent = new Intent(requireActivity(), AlarmReceiver.class);
+        intent.putExtra("text", mResult.getTitle());
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(requireActivity(), 0, intent, 0);
 
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(requireActivity());
-
-        stackBuilder.addParentStack(MainActivity.class);
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(
-                        0,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-        mBuilder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager =
-                (NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.createNotificationChannel(new NotificationChannel("default", "기본채널",
-                NotificationManager.IMPORTANCE_DEFAULT));
-        mNotificationManager.notify(1, mBuilder.build());
+        alarm_manager.set(AlarmManager.RTC_WAKEUP,
+                System.currentTimeMillis() + 10000, pendingIntent); //10초후 알림
     }
-
-//    private Context context;
-//    public AlarmHATT(Context context) {
-//        this.context=context;
-//    }
-//    public void Alarm() {
-//        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-//        Intent intent = new Intent(context, AlarmReceiver.class);
-//
-//        PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, 0);
-//
-//        Calendar calendar = Calendar.getInstance();
-//        //알람시간 calendar에 set해주기
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//        Date strDate = sdf.parse(mResult.getRelease_date());
-//
-//        calendar.set(, calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), 13, 0, 0);
-//
-//        //알람 예약
-//        am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
-//    }
-
 
 }
