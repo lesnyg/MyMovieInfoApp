@@ -1,7 +1,5 @@
 package com.lesnyg.mymovieinfoapp;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -30,12 +28,7 @@ public class NotificationUtil {
                 .setAutoCancel(true);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(1, builder.build());
-//        NotificationManager mNotificationManager =
-//                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-//        mNotificationManager.createNotificationChannel(new NotificationChannel("default", "기본채널",
-//                NotificationManager.IMPORTANCE_DEFAULT));
-//        mNotificationManager.notify(1, builder.build());
+        notificationManager.notify(id, builder.build());
 
     }
 }

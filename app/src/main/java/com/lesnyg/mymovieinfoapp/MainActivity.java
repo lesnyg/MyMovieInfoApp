@@ -21,9 +21,6 @@ import java.util.Comparator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
-    private MovieViewModel mModel;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,9 +29,6 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_main, MovieGridFragment.newInstance())
                 .commit();
-
-        mModel = ViewModelProviders.of(this).get(MovieViewModel.class);
-
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_main);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
