@@ -20,9 +20,9 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.lesnyg.mymovieinfoapp.DetailActivity;
-import com.lesnyg.mymovieinfoapp.adapter.MovieFavoriteAdapter;
 import com.lesnyg.mymovieinfoapp.MovieViewModel;
 import com.lesnyg.mymovieinfoapp.R;
+import com.lesnyg.mymovieinfoapp.adapter.MovieFavoriteAdapter;
 import com.lesnyg.mymovieinfoapp.models.Result;
 
 import java.util.List;
@@ -48,7 +48,6 @@ public class FavoritesListFragment extends Fragment implements MovieFavoriteAdap
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_favorites_list, container, false);
     }
 
@@ -97,7 +96,7 @@ public class FavoritesListFragment extends Fragment implements MovieFavoriteAdap
         mViewModel.filteredResult.observe(requireActivity(), new Observer<List<Result>>() {
             @Override
             public void onChanged(List<Result> results) {
-                mSearchView = getView().findViewById(R.id.favorite_search_view);
+                mSearchView = view.findViewById(R.id.favorite_search_view);
                 mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
                     public boolean onQueryTextSubmit(String s) {
@@ -110,8 +109,10 @@ public class FavoritesListFragment extends Fragment implements MovieFavoriteAdap
                         adapter.setitems(mViewModel.filteredResult.getValue());
                         return true;
                     }
+
                 });
             }
+
         });
 
         adapter.setOnFavoriteClickListener(this);
@@ -123,7 +124,7 @@ public class FavoritesListFragment extends Fragment implements MovieFavoriteAdap
     @Override
     public void onFavoriteClick(Result item) {
         Intent intent = new Intent(requireActivity(), DetailActivity.class);
-        intent.putExtra("result",item);
+        intent.putExtra("result", item);
         startActivity(intent);
     }
 

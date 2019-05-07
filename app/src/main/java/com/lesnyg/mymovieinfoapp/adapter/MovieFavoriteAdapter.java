@@ -20,10 +20,6 @@ import java.util.List;
 public class MovieFavoriteAdapter extends RecyclerView.Adapter<MovieFavoriteAdapter.MovieHolder> {
     public List<Result> mList = new ArrayList<>();
 
-    public MovieFavoriteAdapter() {
-
-    }
-
     public MovieFavoriteAdapter(OnFavoriteClickListener listener) {
         mListener = listener;
     }
@@ -54,7 +50,6 @@ public class MovieFavoriteAdapter extends RecyclerView.Adapter<MovieFavoriteAdap
                 }
             }
         });
-
         return movieHolder;
     }
 

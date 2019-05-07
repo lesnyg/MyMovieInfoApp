@@ -17,8 +17,7 @@ public interface MovieService {
     Call<Search> getPopular(@Query("api_key") String key, @Query("language") String language);
 
     @GET("3/movie/popular")
-    Call<Search> getPopular(@Query("api_key") String key, @Query("language") String language,@Query("page") int page);
-
+    Call<Search> getPopular(@Query("api_key") String key, @Query("language") String language, @Query("page") int page);
 
 
 }

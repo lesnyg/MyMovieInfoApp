@@ -19,8 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MovieRecyclerAdapter extends RecyclerView.Adapter<MovieRecyclerAdapter.MovieHolder> {
-    List<Result> mList = new ArrayList<>();
-
+    private List<Result> mList = new ArrayList<>();
     public MovieRecyclerAdapter(OnMovieClickListener listener) {
         mListener = listener;
     }
@@ -36,8 +35,6 @@ public class MovieRecyclerAdapter extends RecyclerView.Adapter<MovieRecyclerAdap
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.item_movie, viewGroup, false);
         MovieHolder movieHolder = new MovieHolder(view);
-
-
         return movieHolder;
     }
 
@@ -52,10 +49,7 @@ public class MovieRecyclerAdapter extends RecyclerView.Adapter<MovieRecyclerAdap
                 .placeholder(R.mipmap.ic_launcher)
                 .into(movieHolder.movieimage);
         movieHolder.textTitle.setText(result.getTitle());
-        movieHolder.ratingBar.setRating((float)(result.getVote_average()/2));
-
-
-
+        movieHolder.ratingBar.setRating((float) (result.getVote_average() / 2));
 
         movieHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,7 +79,7 @@ public class MovieRecyclerAdapter extends RecyclerView.Adapter<MovieRecyclerAdap
         }
     }
 
-   public interface OnMovieClickListener {
+    public interface OnMovieClickListener {
         void onMovieClick(Result result);
     }
 

@@ -3,7 +3,6 @@ package com.lesnyg.mymovieinfoapp.ui;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -20,32 +19,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.lesnyg.mymovieinfoapp.AlarmReceiver;
 import com.lesnyg.mymovieinfoapp.MovieViewModel;
 import com.lesnyg.mymovieinfoapp.R;
-import com.lesnyg.mymovieinfoapp.adapter.MovieFavoriteAdapter;
 import com.lesnyg.mymovieinfoapp.models.Result;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 import static android.content.Context.ALARM_SERVICE;
 
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class MovieDetailFragment extends Fragment {
 
     private Result mResult;
     private MovieViewModel mModel;
-    RecyclerView mRecycler;
-    MovieFavoriteAdapter mAdapter;
 
     public MovieDetailFragment() {
         setHasOptionsMenu(true);
@@ -100,8 +90,6 @@ public class MovieDetailFragment extends Fragment {
 
         mModel = ViewModelProviders.of(requireActivity())
                 .get(MovieViewModel.class);
-
-
     }
 
     @Override
@@ -149,7 +137,7 @@ public class MovieDetailFragment extends Fragment {
     }
 
 
-    private void alarm(){
+    private void alarm() {
         AlarmManager alarm_manager = (AlarmManager) requireContext().getSystemService(ALARM_SERVICE);
         Intent intent = new Intent(requireActivity(), AlarmReceiver.class);
         intent.putExtra("text", mResult.getTitle());
@@ -158,5 +146,4 @@ public class MovieDetailFragment extends Fragment {
         alarm_manager.set(AlarmManager.RTC_WAKEUP,
                 System.currentTimeMillis() + 10000, pendingIntent); //10초후 알림
     }
-
 }

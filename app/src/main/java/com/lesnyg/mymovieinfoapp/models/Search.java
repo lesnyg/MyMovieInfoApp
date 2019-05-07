@@ -4,7 +4,6 @@ package com.lesnyg.mymovieinfoapp.models;
 import java.util.List;
 
 public class Search {
-
     private int page;
     private int total_results;
     private int total_pages;

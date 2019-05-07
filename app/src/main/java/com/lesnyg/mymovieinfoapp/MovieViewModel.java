@@ -46,7 +46,7 @@ public class MovieViewModel extends AndroidViewModel {
                 AppDatabase.class, "database-name")
                 .allowMainThreadQueries()   // MainThread에서 DB 사용 가능
                 .build();
-            result = mDb.resultDao().getAll();
+        result = mDb.resultDao().getAll();
     }
 
 

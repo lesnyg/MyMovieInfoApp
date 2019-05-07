@@ -11,7 +11,6 @@ import com.lesnyg.mymovieinfoapp.models.Result;
 
 import java.util.List;
 
-
 @Dao
 public interface ResultDao {
     @Query("SELECT * FROM result ")

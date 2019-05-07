@@ -1,24 +1,14 @@
 package com.lesnyg.mymovieinfoapp;
 
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.lesnyg.mymovieinfoapp.models.Result;
 import com.lesnyg.mymovieinfoapp.ui.FavoritesListFragment;
 import com.lesnyg.mymovieinfoapp.ui.MovieGridFragment;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -48,14 +38,5 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-
-
     }
-
-
-
-
-
-
 }

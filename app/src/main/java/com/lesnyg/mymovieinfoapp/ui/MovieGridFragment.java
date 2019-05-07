@@ -1,9 +1,5 @@
 package com.lesnyg.mymovieinfoapp.ui;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,8 +12,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.TaskStackBuilder;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -25,33 +19,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.lesnyg.mymovieinfoapp.DetailActivity;
-import com.lesnyg.mymovieinfoapp.MainActivity;
 import com.lesnyg.mymovieinfoapp.MovieViewModel;
 import com.lesnyg.mymovieinfoapp.R;
 import com.lesnyg.mymovieinfoapp.adapter.MovieRecyclerAdapter;
 import com.lesnyg.mymovieinfoapp.models.Result;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 public class MovieGridFragment extends Fragment {
-    private static final String ARG_MVIMAGE = "movieImage";
-    private static final String ARG_MVTITLE = "movieTitle";
-
-    private int mMovieImage;
-    private String mMovieTitle;
-
-
-    RecyclerView mRecycler;
-    MovieRecyclerAdapter mAdapter;
-
-    SwipeRefreshLayout mSwipeRefreshLayout;
+    private RecyclerView mRecycler;
+    private MovieRecyclerAdapter mAdapter;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private MovieViewModel mModel;
-
 
     public MovieGridFragment() {
         setHasOptionsMenu(true);
@@ -65,24 +47,12 @@ public class MovieGridFragment extends Fragment {
     }
 
     public static MovieGridFragment newInstance() {
-
         Bundle args = new Bundle();
-
         MovieGridFragment fragment = new MovieGridFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mMovieImage = getArguments().getInt(ARG_MVIMAGE);
-            mMovieTitle = getArguments().getString(ARG_MVTITLE);
-        }
-
-
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -118,7 +88,7 @@ public class MovieGridFragment extends Fragment {
         mModel.filteredResult.observe(this, new Observer<List<Result>>() {
             @Override
             public void onChanged(List<Result> results) {
-                if(results != null) {
+                if (results != null) {
                     mAdapter.setitems(results);
                     mRecycler.setAdapter(mAdapter);
                     mSwipeRefreshLayout.setRefreshing(false);

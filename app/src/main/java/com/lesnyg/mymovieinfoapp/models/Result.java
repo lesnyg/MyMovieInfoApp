@@ -11,10 +11,9 @@ import java.util.Objects;
 
 @Entity
 public class Result implements Serializable {
-
-    private int vote_count;
     @PrimaryKey
     private int id;
+    private int vote_count;
     private boolean video;
     private double vote_average;
     private String title;
