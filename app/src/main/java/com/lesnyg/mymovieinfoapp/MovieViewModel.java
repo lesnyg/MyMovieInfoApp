@@ -129,7 +129,7 @@ public class MovieViewModel extends AndroidViewModel {
         mDb.resultDao().deleteFavorite(result);
     }
 
-    //즐겨찾기 값 가져오기
+    //즐겨찾기 가져오기
     public void searchFavorite(String s) {
         List<Result> filteredList = new ArrayList<>();
         for (int i = 0; i < results.size(); i++) {
