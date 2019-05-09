@@ -38,13 +38,6 @@ public class FavoritesListFragment extends Fragment implements MovieFavoriteAdap
         setHasOptionsMenu(true);
     }
 
-    public static FavoritesListFragment newInstance() {
-        FavoritesListFragment fragment = new FavoritesListFragment();
-        Bundle bundle = new Bundle();
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -55,8 +48,8 @@ public class FavoritesListFragment extends Fragment implements MovieFavoriteAdap
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mViewModel = ViewModelProviders.of(requireActivity())
-                .get(MovieViewModel.class);
+        mViewModel = ViewModelProviders.of(requireActivity()).get(MovieViewModel.class);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerview_favorites);
 
         MovieFavoriteAdapter adapter = new MovieFavoriteAdapter(new MovieFavoriteAdapter.OnFavoriteClickListener() {
             @Override
@@ -69,7 +62,6 @@ public class FavoritesListFragment extends Fragment implements MovieFavoriteAdap
             }
         });
 
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerview_favorites);
         ItemTouchHelper helper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT) {
             @Override
@@ -90,7 +82,7 @@ public class FavoritesListFragment extends Fragment implements MovieFavoriteAdap
         mViewModel.result.observe(requireActivity(), (List<Result> items) -> {
             mViewModel.results = items;
             adapter.updateItems(mViewModel.results);
-            mViewModel.searchResult.setValue(items);
+            mViewModel.searchResult.setValue(mViewModel.results);
         });
 
         mViewModel.searchResult.observe(requireActivity(), new Observer<List<Result>>() {

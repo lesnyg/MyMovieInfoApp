@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_main, MovieGridFragment.newInstance())
+                .replace(R.id.fragment_main, new MovieGridFragment())
                 .commit();
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_main);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -26,12 +26,12 @@ public class MainActivity extends AppCompatActivity {
                 switch (menuItem.getItemId()) {
                     case R.id.action_home:
                         getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_main, MovieGridFragment.newInstance())
+                                .replace(R.id.fragment_main,new MovieGridFragment())
                                 .commit();
                         return true;
                     case R.id.action_favorite:
                         getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_main, FavoritesListFragment.newInstance())
+                                .replace(R.id.fragment_main, new FavoritesListFragment())
                                 .commit();
                         return true;
                 }

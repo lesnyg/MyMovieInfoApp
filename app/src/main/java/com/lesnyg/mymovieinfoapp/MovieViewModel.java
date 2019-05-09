@@ -55,7 +55,15 @@ public class MovieViewModel extends AndroidViewModel {
             @Override
             public void onResponse(Call<Search> call, Response<Search> response) {
                 if (response.body() != null) {
-                    filteredResult.setValue(response.body().getResults());
+                    if (filteredResult.getValue() == null) {
+                        filteredResult.setValue(response.body().getResults());
+                    } else {
+                        List<Result> pageList = new ArrayList<>();
+                        pageList.addAll(filteredResult.getValue());
+                        pageList.addAll(response.body().getResults());
+                        filteredResult.setValue(pageList);
+                    }
+
                 }
             }
 
@@ -83,16 +91,21 @@ public class MovieViewModel extends AndroidViewModel {
     }
 
     public void fetchPopular(int page) {
-        service.getPopular(MY_KEY, MY_COUNTRY, page).enqueue(new Callback<Search>() {
+        service.getPopular(MY_KEY, MY_COUNTRY).enqueue(new Callback<Search>() {
             @Override
             public void onResponse(Call<Search> call, Response<Search> response) {
                 if (response.body() != null) {
-                    List<Result> newList = new ArrayList<>();
-                    filteredResult.setValue(response.body().getResults());
-                    newList.addAll(filteredResult.getValue());
-
+                    if (filteredResult.getValue() == null) {
+                        filteredResult.setValue(response.body().getResults());
+                    } else {
+                        List<Result> popularList = new ArrayList<>();
+                        popularList.addAll(filteredResult.getValue());
+                        popularList.addAll(response.body().getResults());
+                        filteredResult.setValue(popularList);
+                    }
+                    currentPage = page;
                 }
-                currentPage = page;
+
             }
 
             @Override

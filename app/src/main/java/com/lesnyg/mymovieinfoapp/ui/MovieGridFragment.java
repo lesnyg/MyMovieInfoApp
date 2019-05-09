@@ -39,21 +39,6 @@ public class MovieGridFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
-    public static MovieGridFragment newInstance(Result result) {
-        MovieGridFragment fragment = new MovieGridFragment();
-        Bundle bundle = new Bundle();
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
-    public static MovieGridFragment newInstance() {
-        Bundle args = new Bundle();
-        MovieGridFragment fragment = new MovieGridFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -63,16 +48,29 @@ public class MovieGridFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        mRecycler = view.findViewById(R.id.recyclerview);
         mModel = ViewModelProviders.of(requireActivity()).get(MovieViewModel.class);
-
+        mRecycler = view.findViewById(R.id.recyclerview);
         mSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
-        if (getArguments() != null) {
-            mModel.fetchUpComing();
-        }
-
+        mAdapter = new MovieRecyclerAdapter(new MovieRecyclerAdapter.OnMovieClickListener() {
+            @Override
+            public void onMovieClick(Result result) {
+                Intent intent = new Intent(requireActivity(), DetailActivity.class);
+                intent.putExtra("result", result);
+                startActivity(intent);
+            }
+        });
         mRecycler.setAdapter(mAdapter);
+        mModel.fetchUpComing();
+        mModel.filteredResult.observe(this, new Observer<List<Result>>() {
+            @Override
+            public void onChanged(List<Result> results) {
+                if (results != null) {
+                    mAdapter.setitems(results);
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
+
 
 
         mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -83,24 +81,6 @@ public class MovieGridFragment extends Fragment {
                 if (!isScrollable) {
                     mModel.fetchPopular(mModel.currentPage + 1);
                 }
-            }
-        });
-        mModel.filteredResult.observe(this, new Observer<List<Result>>() {
-            @Override
-            public void onChanged(List<Result> results) {
-                if (results != null) {
-                    mAdapter.setitems(results);
-                    mRecycler.setAdapter(mAdapter);
-                    mSwipeRefreshLayout.setRefreshing(false);
-                }
-            }
-        });
-        mAdapter = new MovieRecyclerAdapter(new MovieRecyclerAdapter.OnMovieClickListener() {
-            @Override
-            public void onMovieClick(Result result) {
-                Intent intent = new Intent(requireActivity(), DetailActivity.class);
-                intent.putExtra("result", result);
-                startActivity(intent);
             }
         });
 
@@ -121,7 +101,7 @@ public class MovieGridFragment extends Fragment {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mModel.fetchUpComing();
+                mModel.fetchPopular(1);
             }
         });
 
