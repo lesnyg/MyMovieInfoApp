@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.lesnyg.mymovieinfoapp.R;
+import com.lesnyg.mymovieinfoapp.databinding.ItemFavoritesBinding;
 import com.lesnyg.mymovieinfoapp.models.Result;
 
 import java.util.ArrayList;
@@ -55,24 +56,9 @@ public class MovieFavoriteAdapter extends RecyclerView.Adapter<MovieFavoriteAdap
 
     @Override
     public void onBindViewHolder(@NonNull MovieHolder movieHolder, int i) {
-        Result item = mList.get(i);
+        Result result = mList.get(i);
+        movieHolder.binding.setResult(result);
 
-        String posterPath = "https://image.tmdb.org/t/p/w500" + item.getPoster_path();
-        Glide.with(movieHolder.itemView)
-                .load(posterPath)
-                .centerCrop()
-                .placeholder(R.mipmap.ic_launcher)
-                .into(movieHolder.movieimage);
-        movieHolder.textTitle.setText(item.getTitle());
-
-        movieHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mListener != null) {
-                    mListener.onFavoriteClick(mList.get(movieHolder.getAdapterPosition()));
-                }
-            }
-        });
     }
 
     @Override
@@ -81,13 +67,11 @@ public class MovieFavoriteAdapter extends RecyclerView.Adapter<MovieFavoriteAdap
     }
 
     public class MovieHolder extends RecyclerView.ViewHolder {
-        private ImageView movieimage;
-        private TextView textTitle;
+        private ItemFavoritesBinding binding;
 
         public MovieHolder(@NonNull View itemView) {
             super(itemView);
-            movieimage = itemView.findViewById(R.id.image_favorites);
-            textTitle = itemView.findViewById(R.id.text_favorites);
+            binding = ItemFavoritesBinding.bind(itemView);
         }
     }
 

@@ -139,7 +139,7 @@ public class MovieViewModel extends AndroidViewModel {
                 filteredList.add(result);
             }
         }
-        filteredResult.setValue(filteredList);
+        searchResult.setValue(filteredList);
     }
 }
 

@@ -90,10 +90,10 @@ public class FavoritesListFragment extends Fragment implements MovieFavoriteAdap
         mViewModel.result.observe(requireActivity(), (List<Result> items) -> {
             mViewModel.results = items;
             adapter.updateItems(mViewModel.results);
-            mViewModel.filteredResult.setValue(items);
+            mViewModel.searchResult.setValue(items);
         });
 
-        mViewModel.filteredResult.observe(requireActivity(), new Observer<List<Result>>() {
+        mViewModel.searchResult.observe(requireActivity(), new Observer<List<Result>>() {
             @Override
             public void onChanged(List<Result> results) {
                 mSearchView = view.findViewById(R.id.favorite_search_view);
@@ -106,7 +106,7 @@ public class FavoritesListFragment extends Fragment implements MovieFavoriteAdap
                     @Override
                     public boolean onQueryTextChange(String s) {
                         mViewModel.searchFavorite(s);
-                        adapter.setitems(mViewModel.filteredResult.getValue());
+                        adapter.setitems(mViewModel.searchResult.getValue());
                         return true;
                     }
 
