@@ -18,7 +18,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="즐겨찾기 리스트 페이지"
+        android:text="@string/listpage"
         android:textSize="32sp" />
 
     <androidx.recyclerview.widget.RecyclerView
