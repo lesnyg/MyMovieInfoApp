@@ -1,4 +1,4 @@
-package com.lesnyg.mymovieinfoapp.ui;
+package com.lesnyg.movieinfoapp.ui;
 
 
 import android.app.AlarmManager;
@@ -21,10 +21,10 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
-import com.lesnyg.mymovieinfoapp.AlarmReceiver;
-import com.lesnyg.mymovieinfoapp.MovieViewModel;
-import com.lesnyg.mymovieinfoapp.R;
-import com.lesnyg.mymovieinfoapp.models.Result;
+import com.lesnyg.movieinfoapp.AlarmReceiver;
+import com.lesnyg.movieinfoapp.MovieViewModel;
+import com.lesnyg.movieinfoapp.R;
+import com.lesnyg.movieinfoapp.models.Result;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

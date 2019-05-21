@@ -1,14 +1,9 @@
-package com.lesnyg.mymovieinfoapp.adapter;
+package com.lesnyg.movieinfoapp.adapter;
 
 import android.widget.ImageView;
 
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
-import com.lesnyg.mymovieinfoapp.R;
-import com.lesnyg.mymovieinfoapp.models.Result;
-
-import java.util.List;
+import com.lesnyg.movieinfoapp.R;
 
 public class BindingAdapter {
     @androidx.databinding.BindingAdapter("posterImage")

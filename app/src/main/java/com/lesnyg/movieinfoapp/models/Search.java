@@ -1,5 +1,5 @@
 
-package com.lesnyg.mymovieinfoapp.models;
+package com.lesnyg.movieinfoapp.models;
 
 import java.util.List;
 

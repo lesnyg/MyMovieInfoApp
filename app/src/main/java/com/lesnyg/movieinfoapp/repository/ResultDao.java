@@ -1,4 +1,4 @@
-package com.lesnyg.mymovieinfoapp.repository;
+package com.lesnyg.movieinfoapp.repository;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -7,7 +7,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.lesnyg.mymovieinfoapp.models.Result;
+import com.lesnyg.movieinfoapp.models.Result;
 
 import java.util.List;
 

@@ -1,11 +1,11 @@
-package com.lesnyg.mymovieinfoapp;
+package com.lesnyg.movieinfoapp;
 
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.lesnyg.mymovieinfoapp.models.Result;
-import com.lesnyg.mymovieinfoapp.ui.MovieDetailFragment;
+import com.lesnyg.movieinfoapp.models.Result;
+import com.lesnyg.movieinfoapp.ui.MovieDetailFragment;
 
 public class DetailActivity extends AppCompatActivity {
     @Override

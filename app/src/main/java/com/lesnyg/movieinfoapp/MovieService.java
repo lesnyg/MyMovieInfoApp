@@ -1,6 +1,6 @@
-package com.lesnyg.mymovieinfoapp;
+package com.lesnyg.movieinfoapp;
 
-import com.lesnyg.mymovieinfoapp.models.Search;
+import com.lesnyg.movieinfoapp.models.Search;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -11,7 +11,7 @@ public interface MovieService {
     Call<Search> getSearch(@Query("api_key") String key, @Query("query") String query, @Query("language") String language);
 
     @GET("3/movie/upcoming")
-    Call<Search> getUpComing(@Query("api_key") String key, @Query("language") String language);
+    Call<Search> getUpComing(@Query("api_key") String key, @Query("language") String language,@Query("page") int page);
 
     @GET("3/movie/popular")
     Call<Search> getPopular(@Query("api_key") String key, @Query("language") String language);

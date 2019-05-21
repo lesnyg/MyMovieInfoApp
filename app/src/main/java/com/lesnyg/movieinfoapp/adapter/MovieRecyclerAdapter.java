@@ -1,20 +1,16 @@
-package com.lesnyg.mymovieinfoapp.adapter;
+package com.lesnyg.movieinfoapp.adapter;
 
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.RatingBar;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.lesnyg.mymovieinfoapp.R;
-import com.lesnyg.mymovieinfoapp.databinding.ItemMovieBinding;
-import com.lesnyg.mymovieinfoapp.models.Result;
+import com.lesnyg.movieinfoapp.R;
+import com.lesnyg.movieinfoapp.databinding.ItemMovieBinding;
+import com.lesnyg.movieinfoapp.models.Result;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -4,7 +4,7 @@
     <data>
         <variable
             name="result"
-            type="com.lesnyg.mymovieinfoapp.models.Result" />
+            type="com.lesnyg.movieinfoapp.models.Result" />
     </data>
 <LinearLayout
     android:orientation="horizontal" android:layout_width="match_parent"

@@ -1,4 +1,4 @@
-package com.lesnyg.mymovieinfoapp;
+package com.lesnyg.movieinfoapp;
 
 import android.app.Application;
 
@@ -8,9 +8,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.room.Room;
 
-import com.lesnyg.mymovieinfoapp.models.Result;
-import com.lesnyg.mymovieinfoapp.models.Search;
-import com.lesnyg.mymovieinfoapp.repository.AppDatabase;
+import com.lesnyg.movieinfoapp.models.Result;
+import com.lesnyg.movieinfoapp.models.Search;
+import com.lesnyg.movieinfoapp.repository.AppDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +24,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MovieViewModel extends AndroidViewModel {
     public MutableLiveData<List<Result>> filteredResult = new MutableLiveData<>();
     public MutableLiveData<List<Result>> searchResult = new MutableLiveData<>();
+    public MutableLiveData<List<Result>> MovieResult = new MutableLiveData<>();
 
     private static final String MY_KEY = "0882850438bd0da4458576be7d4a447c";
     private static final String MY_COUNTRY = "ko-KR";
@@ -32,8 +33,7 @@ public class MovieViewModel extends AndroidViewModel {
     public int currentPage = 1;
 
     // 즐겨찾기
-    public LiveData<List<Result>> result;
-    public AppDatabase mDb;
+    private AppDatabase mDb;
     private Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("https://api.themoviedb.org/")
             .addConverterFactory(GsonConverterFactory.create())
@@ -46,16 +46,19 @@ public class MovieViewModel extends AndroidViewModel {
                 AppDatabase.class, "database-name")
                 .allowMainThreadQueries()   // MainThread에서 DB 사용 가능
                 .build();
-        result = mDb.resultDao().getAll();
+    }
+
+    public LiveData<List<Result>> getFavorite() {
+        return mDb.resultDao().getAll();
     }
 
 
-    public void fetchUpComing() {
-        service.getUpComing(MY_KEY, MY_COUNTRY).enqueue(new Callback<Search>() {
+    public void fetchUpComing(int page) {
+        service.getUpComing(MY_KEY, MY_COUNTRY,page).enqueue(new Callback<Search>() {
             @Override
             public void onResponse(Call<Search> call, Response<Search> response) {
                 if (response.body() != null) {
-                    if (filteredResult.getValue() == null) {
+                    if (currentPage == 1) {
                         filteredResult.setValue(response.body().getResults());
                     } else {
                         List<Result> pageList = new ArrayList<>();
@@ -63,7 +66,7 @@ public class MovieViewModel extends AndroidViewModel {
                         pageList.addAll(response.body().getResults());
                         filteredResult.setValue(pageList);
                     }
-
+                    currentPage = page;
                 }
             }
 
@@ -71,31 +74,16 @@ public class MovieViewModel extends AndroidViewModel {
             public void onFailure(Call<Search> call, Throwable t) {
 
             }
-        });
-    }
 
-    public void fetchPopular() {
-        service.getPopular(MY_KEY, MY_COUNTRY).enqueue(new Callback<Search>() {
-            @Override
-            public void onResponse(Call<Search> call, Response<Search> response) {
-                if (response.body() != null) {
-                    filteredResult.setValue(response.body().getResults());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Search> call, Throwable t) {
-
-            }
         });
     }
 
     public void fetchPopular(int page) {
-        service.getPopular(MY_KEY, MY_COUNTRY).enqueue(new Callback<Search>() {
+        service.getPopular(MY_KEY, MY_COUNTRY,page).enqueue(new Callback<Search>() {
             @Override
             public void onResponse(Call<Search> call, Response<Search> response) {
                 if (response.body() != null) {
-                    if (filteredResult.getValue() == null) {
+                    if (currentPage == 1) {
                         filteredResult.setValue(response.body().getResults());
                     } else {
                         List<Result> popularList = new ArrayList<>();

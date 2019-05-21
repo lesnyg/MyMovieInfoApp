@@ -1,4 +1,4 @@
-package com.lesnyg.mymovieinfoapp;
+package com.lesnyg.movieinfoapp;
 
 import org.junit.Test;
 

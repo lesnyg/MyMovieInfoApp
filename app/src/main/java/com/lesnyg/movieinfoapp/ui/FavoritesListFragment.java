@@ -1,4 +1,4 @@
-package com.lesnyg.mymovieinfoapp.ui;
+package com.lesnyg.movieinfoapp.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,11 +19,11 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.lesnyg.mymovieinfoapp.DetailActivity;
-import com.lesnyg.mymovieinfoapp.MovieViewModel;
-import com.lesnyg.mymovieinfoapp.R;
-import com.lesnyg.mymovieinfoapp.adapter.MovieFavoriteAdapter;
-import com.lesnyg.mymovieinfoapp.models.Result;
+import com.lesnyg.movieinfoapp.DetailActivity;
+import com.lesnyg.movieinfoapp.MovieViewModel;
+import com.lesnyg.movieinfoapp.R;
+import com.lesnyg.movieinfoapp.adapter.MovieFavoriteAdapter;
+import com.lesnyg.movieinfoapp.models.Result;
 
 import java.util.List;
 
@@ -62,6 +62,8 @@ public class FavoritesListFragment extends Fragment implements MovieFavoriteAdap
             }
         });
 
+
+
         ItemTouchHelper helper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT) {
             @Override
@@ -75,14 +77,17 @@ public class FavoritesListFragment extends Fragment implements MovieFavoriteAdap
                 mViewModel.deleteFavorite(mResult);
             }
         });
+
         helper.attachToRecyclerView(recyclerView);
-        recyclerView.setAdapter(adapter);
 
 
-        mViewModel.result.observe(requireActivity(), (List<Result> items) -> {
-            mViewModel.results = items;
-            adapter.updateItems(mViewModel.results);
-            mViewModel.searchResult.setValue(mViewModel.results);
+        mViewModel.getFavorite().observe(requireActivity(), new Observer<List<Result>>() {
+            @Override
+            public void onChanged(List<Result> items) {
+                mViewModel.results = items;
+                adapter.updateItems(items);
+                mViewModel.searchResult.setValue(mViewModel.results);
+            }
         });
 
         mViewModel.searchResult.observe(requireActivity(), new Observer<List<Result>>() {
@@ -98,7 +103,7 @@ public class FavoritesListFragment extends Fragment implements MovieFavoriteAdap
                     @Override
                     public boolean onQueryTextChange(String s) {
                         mViewModel.searchFavorite(s);
-                        adapter.setitems(mViewModel.searchResult.getValue());
+                        adapter.updateItems(mViewModel.searchResult.getValue());
                         return true;
                     }
 
@@ -109,7 +114,7 @@ public class FavoritesListFragment extends Fragment implements MovieFavoriteAdap
 
         adapter.setOnFavoriteClickListener(this);
 
-
+        recyclerView.setAdapter(adapter);
     }
 
 
