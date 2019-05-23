@@ -18,12 +18,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
 import com.lesnyg.movieinfoapp.AlarmReceiver;
+import com.lesnyg.movieinfoapp.CounterViewModel;
 import com.lesnyg.movieinfoapp.MovieViewModel;
 import com.lesnyg.movieinfoapp.R;
+import com.lesnyg.movieinfoapp.databinding.FragmentMovieDetailBinding;
 import com.lesnyg.movieinfoapp.models.Result;
 
 import java.text.SimpleDateFormat;
@@ -36,6 +39,7 @@ public class MovieDetailFragment extends Fragment {
 
     private Result mResult;
     private MovieViewModel mModel;
+    private FragmentMovieDetailBinding mBinding;
 
     public MovieDetailFragment() {
         setHasOptionsMenu(true);
@@ -55,17 +59,14 @@ public class MovieDetailFragment extends Fragment {
         if (getArguments() != null) {
             mResult = (Result) getArguments().getSerializable("filteredResult");
         }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view;
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            view = inflater.inflate(R.layout.fragment_movie_detail, container, false);
-        } else {
-            view = inflater.inflate(R.layout.fragment_movie_detail2, container, false);
-        }
+        View view = inflater.inflate(R.layout.fragment_movie_detail, container, false);
+        mBinding = FragmentMovieDetailBinding.bind(view);
         return view;
 
     }
@@ -75,21 +76,32 @@ public class MovieDetailFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         String posterPath = "https://image.tmdb.org/t/p/w500" + mResult.getPoster_path();
 
-        ImageView posterImage = view.findViewById((R.id.imageView));
+        ImageView posterImage = view.findViewById((R.id.imageView_poster));
         Glide.with(getActivity())
                 .load(posterPath)
                 .centerCrop()
                 .placeholder(R.mipmap.ic_launcher)
                 .into(posterImage);
-        TextView titleText = view.findViewById(R.id.textView_title);
-        titleText.setText(mResult.getTitle());
-        TextView dateText = view.findViewById(R.id.textView_releasedate);
-        dateText.setText("개봉일 : " + mResult.getRelease_date());
-        TextView overViewText = view.findViewById(R.id.textView_overview);
-        overViewText.setText(mResult.getOverview());
+        mBinding.setResult(mResult);
+        mModel = ViewModelProviders.of(requireActivity()).get(MovieViewModel.class);
 
-        mModel = ViewModelProviders.of(requireActivity())
-                .get(MovieViewModel.class);
+        CounterViewModel viewModel = ViewModelProviders.of(this).get(CounterViewModel.class);
+
+        viewModel.goodcounter.observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                mBinding.setViewModel(viewModel);
+            }
+        });
+        mBinding.setLifecycleOwner(this);
+
+        mBinding.textCommentBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBinding.editComment.setVisibility(View.VISIBLE);
+            }
+        });
+
     }
 
     @Override

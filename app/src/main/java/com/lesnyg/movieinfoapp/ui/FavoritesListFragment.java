@@ -1,6 +1,7 @@
 package com.lesnyg.movieinfoapp.ui;
 
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -8,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,17 +24,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.lesnyg.movieinfoapp.DetailActivity;
 import com.lesnyg.movieinfoapp.MovieViewModel;
 import com.lesnyg.movieinfoapp.R;
+import com.lesnyg.movieinfoapp.SwipeController;
+import com.lesnyg.movieinfoapp.SwipeControllerActions;
 import com.lesnyg.movieinfoapp.adapter.MovieFavoriteAdapter;
 import com.lesnyg.movieinfoapp.models.Result;
 
+import java.util.Collections;
 import java.util.List;
 
 
 public class FavoritesListFragment extends Fragment implements MovieFavoriteAdapter.OnFavoriteClickListener {
-
+    private boolean isSwapped = false;
     private Result mResult;
     private MovieViewModel mViewModel;
     private SearchView mSearchView;
+    private SwipeController swipeController = null;
+
 
     public FavoritesListFragment() {
         setHasOptionsMenu(true);
@@ -62,24 +69,59 @@ public class FavoritesListFragment extends Fragment implements MovieFavoriteAdap
             }
         });
 
+        recyclerView.setAdapter(adapter);
 
-
-        ItemTouchHelper helper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
-                ItemTouchHelper.LEFT) {
+        swipeController = new SwipeController(new SwipeControllerActions() {
+            //삭제버튼
             @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
+            public void onRightClicked(int position) {
+                mResult = adapter.mList.get(position);
+                mViewModel.deleteFavorite(mResult);
+            }
+
+
+        });
+
+        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
+        itemTouchhelper.attachToRecyclerView(recyclerView);
+
+        recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+                swipeController.onDraw(c);
+            }
+        });
+
+        ItemTouchHelper touchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView,
+                                  @NonNull RecyclerView.ViewHolder viewHolder,
+                                  @NonNull RecyclerView.ViewHolder target) {
+                Collections.swap(adapter.getItems(),
+                        viewHolder.getAdapterPosition(),
+                        target.getAdapterPosition());
+
+                adapter.notifyItemMoved(viewHolder.getAdapterPosition(),
+                        target.getAdapterPosition());
+
+                isSwapped = true;
+
                 return false;
             }
 
             @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-                mResult = adapter.mList.get(viewHolder.getAdapterPosition());
-                mViewModel.deleteFavorite(mResult);
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+            }
+
+            private void setItemsClickable(RecyclerView recyclerView,
+                                           boolean isClickable) {
+                for (int i = 0; i < recyclerView.getChildCount(); ++i) {
+                    recyclerView.getChildAt(i).setClickable(isClickable);
+                }
             }
         });
-
-        helper.attachToRecyclerView(recyclerView);
-
+        touchHelper.attachToRecyclerView(recyclerView);
 
         mViewModel.getFavorite().observe(requireActivity(), new Observer<List<Result>>() {
             @Override
