@@ -27,6 +27,7 @@ import com.lesnyg.movieinfoapp.R;
 import com.lesnyg.movieinfoapp.SwipeController;
 import com.lesnyg.movieinfoapp.SwipeControllerActions;
 import com.lesnyg.movieinfoapp.adapter.MovieFavoriteAdapter;
+import com.lesnyg.movieinfoapp.models.Comment;
 import com.lesnyg.movieinfoapp.models.Result;
 
 import java.util.Collections;
@@ -131,6 +132,8 @@ public class FavoritesListFragment extends Fragment implements MovieFavoriteAdap
                 mViewModel.searchResult.setValue(mViewModel.results);
             }
         });
+
+
 
         mViewModel.searchResult.observe(requireActivity(), new Observer<List<Result>>() {
             @Override

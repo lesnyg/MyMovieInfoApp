@@ -22,4 +22,5 @@ public interface ResultDao {
     @Delete
     void deleteFavorite(Result result);
 
+
 }

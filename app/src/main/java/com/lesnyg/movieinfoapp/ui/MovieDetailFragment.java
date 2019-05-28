@@ -20,17 +20,23 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.lesnyg.movieinfoapp.AlarmReceiver;
 import com.lesnyg.movieinfoapp.CounterViewModel;
 import com.lesnyg.movieinfoapp.MovieViewModel;
 import com.lesnyg.movieinfoapp.R;
+import com.lesnyg.movieinfoapp.adapter.CommentAdapter;
 import com.lesnyg.movieinfoapp.databinding.FragmentMovieDetailBinding;
+import com.lesnyg.movieinfoapp.models.Comment;
 import com.lesnyg.movieinfoapp.models.Result;
+import com.lesnyg.movieinfoapp.repository.AppDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.SplittableRandom;
 
 import static android.content.Context.ALARM_SERVICE;
 
@@ -95,14 +101,43 @@ public class MovieDetailFragment extends Fragment {
         });
         mBinding.setLifecycleOwner(this);
 
-        mBinding.textCommentBtn.setOnClickListener(new View.OnClickListener() {
+//        mBinding.textCommentBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mBinding.layoutComment.setVisibility(View.VISIBLE);
+//            }
+//        });
+
+        RecyclerView recyclerView = view.findViewById(R.id.comment_recycler);
+        CommentAdapter adapter = new CommentAdapter();
+        recyclerView.setAdapter(adapter);
+
+        mBinding.btnCommentAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mBinding.editComment.setVisibility(View.VISIBLE);
+                Comment comment = new Comment();
+                comment.setComment(mBinding.editComment.getText().toString());
+                comment.setMovieId(mResult.getId());
+//                AppDatabase.getInstance(requireActivity()).commentDao().insertComment(
+//                        comment);
+                mModel.addComment(comment);
+                mBinding.editComment.setText("");
             }
         });
 
+
+
+
+        mModel.getComment(mResult.getId()).observe(requireActivity(), new Observer<List<Comment>>() {
+            @Override
+            public void onChanged(List<Comment> comment) {
+                mModel.comments = comment;
+                adapter.updatecomment(comment);
+                mModel.commentResult.setValue(mModel.comments);
+            }
+        });
     }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

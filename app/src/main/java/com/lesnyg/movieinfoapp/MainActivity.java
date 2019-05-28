@@ -14,16 +14,11 @@ import com.lesnyg.movieinfoapp.ui.FavoritesListFragment;
 import com.lesnyg.movieinfoapp.ui.MovieGridFragment;
 
 public class MainActivity extends AppCompatActivity {
-    private AdView mAdView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        MobileAds.initialize(this, "ca-app-pub-9556752513956464~2007213175");
 
-        mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_main, new MovieGridFragment())

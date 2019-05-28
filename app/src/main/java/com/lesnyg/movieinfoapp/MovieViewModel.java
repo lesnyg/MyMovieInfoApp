@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.room.Room;
 
+import com.lesnyg.movieinfoapp.models.Comment;
 import com.lesnyg.movieinfoapp.models.Result;
 import com.lesnyg.movieinfoapp.models.Search;
 import com.lesnyg.movieinfoapp.repository.AppDatabase;
@@ -24,11 +25,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MovieViewModel extends AndroidViewModel {
     public MutableLiveData<List<Result>> filteredResult = new MutableLiveData<>();
     public MutableLiveData<List<Result>> searchResult = new MutableLiveData<>();
-    public MutableLiveData<List<Result>> MovieResult = new MutableLiveData<>();
+    public MutableLiveData<List<Comment>> commentResult = new MutableLiveData<>();
+
 
     private static final String MY_KEY = "0882850438bd0da4458576be7d4a447c";
     private static final String MY_COUNTRY = "ko-KR";
     public List<Result> results;    //
+    public List<Comment> comments;
     private List<Result> mResults = new ArrayList<>();
     public int currentPage = 1;
 
@@ -52,9 +55,13 @@ public class MovieViewModel extends AndroidViewModel {
         return mDb.resultDao().getAll();
     }
 
+    public LiveData<List<Comment>> getComment(int movieId){
+        return mDb.commentDao().commentgetAll(movieId);
+    }
+
 
     public void fetchUpComing(int page) {
-        service.getUpComing(MY_KEY, MY_COUNTRY,page).enqueue(new Callback<Search>() {
+        service.getUpComing(MY_KEY, MY_COUNTRY, page).enqueue(new Callback<Search>() {
             @Override
             public void onResponse(Call<Search> call, Response<Search> response) {
                 if (response.body() != null) {
@@ -79,7 +86,7 @@ public class MovieViewModel extends AndroidViewModel {
     }
 
     public void fetchPopular(int page) {
-        service.getPopular(MY_KEY, MY_COUNTRY,page).enqueue(new Callback<Search>() {
+        service.getPopular(MY_KEY, MY_COUNTRY, page).enqueue(new Callback<Search>() {
             @Override
             public void onResponse(Call<Search> call, Response<Search> response) {
                 if (response.body() != null) {
@@ -141,6 +148,16 @@ public class MovieViewModel extends AndroidViewModel {
             }
         }
         searchResult.setValue(filteredList);
+    }
+
+    //한줄평 추가하기
+    public void addComment(Comment comment) {
+        mDb.commentDao().insertComment(comment);
+    }
+
+    //한줄평 삭제하기
+    public void deleteComment(Comment comment) {
+        mDb.commentDao().deleteComment(comment);
     }
 }
 

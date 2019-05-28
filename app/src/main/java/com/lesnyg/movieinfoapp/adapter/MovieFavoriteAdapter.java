@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.lesnyg.movieinfoapp.R;
 import com.lesnyg.movieinfoapp.databinding.ItemFavoritesBinding;
+import com.lesnyg.movieinfoapp.models.Comment;
 import com.lesnyg.movieinfoapp.models.Result;
 
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class MovieFavoriteAdapter extends RecyclerView.Adapter<MovieFavoriteAdap
         mList.addAll(items);
         notifyDataSetChanged();
     }
+
 
     public List<Result> getItems(){
         return mList;
