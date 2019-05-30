@@ -403,7 +403,7 @@
                     app:srcCompat="@drawable/ic_kakao" />
 
                 <Button
-                    android:id="@+id/button"
+                    android:id="@+id/booking_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

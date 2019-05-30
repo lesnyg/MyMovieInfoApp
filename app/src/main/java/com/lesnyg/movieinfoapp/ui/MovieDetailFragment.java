@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,10 +24,15 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.lesnyg.movieinfoapp.AlarmReceiver;
 import com.lesnyg.movieinfoapp.CounterViewModel;
 import com.lesnyg.movieinfoapp.MovieViewModel;
 import com.lesnyg.movieinfoapp.R;
+import com.lesnyg.movieinfoapp.TheaterDialogActivity;
 import com.lesnyg.movieinfoapp.adapter.CommentAdapter;
 import com.lesnyg.movieinfoapp.databinding.FragmentMovieDetailBinding;
 import com.lesnyg.movieinfoapp.models.Comment;
@@ -35,7 +41,9 @@ import com.lesnyg.movieinfoapp.repository.AppDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.SplittableRandom;
 
 import static android.content.Context.ALARM_SERVICE;
@@ -46,7 +54,8 @@ public class MovieDetailFragment extends Fragment {
     private Result mResult;
     private MovieViewModel mModel;
     private FragmentMovieDetailBinding mBinding;
-
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private static final String TAG = MovieDetailFragment.class.getSimpleName();
     public MovieDetailFragment() {
         setHasOptionsMenu(true);
     }
@@ -115,13 +124,32 @@ public class MovieDetailFragment extends Fragment {
         mBinding.btnCommentAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Comment comment = new Comment();
-                comment.setComment(mBinding.editComment.getText().toString());
-                comment.setMovieId(mResult.getId());
-//                AppDatabase.getInstance(requireActivity()).commentDao().insertComment(
-//                        comment);
-                mModel.addComment(comment);
-                mBinding.editComment.setText("");
+//                Comment comment = new Comment();
+//                comment.setComment(mBinding.editComment.getText().toString());
+//                comment.setMovieId(mResult.getId());
+////                AppDatabase.getInstance(requireActivity()).commentDao().insertComment(
+////                        comment);
+//                mModel.addComment(comment);
+//                mBinding.editComment.setText("");
+
+                Map<String, Object> user = new HashMap<>();
+                user.put("oneLineComment", mBinding.editComment.getText().toString());
+                user.put("movieId", mResult.getId());
+
+                db.collection("comment")
+                        .add(user)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "Error adding document", e);
+                            }
+                        });
             }
         });
 
@@ -136,6 +164,16 @@ public class MovieDetailFragment extends Fragment {
                 mModel.commentResult.setValue(mModel.comments);
             }
         });
+
+        view.findViewById(R.id.booking_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(requireActivity(), TheaterDialogActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
     }
 
 

@@ -23,10 +23,15 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MovieViewModel extends AndroidViewModel {
+    public enum MovieMenu {
+        UPCOMING, SORT, POPULAR
+    }
+
+    public MovieMenu movieMenu = MovieMenu.UPCOMING;
+
     public MutableLiveData<List<Result>> filteredResult = new MutableLiveData<>();
     public MutableLiveData<List<Result>> searchResult = new MutableLiveData<>();
     public MutableLiveData<List<Comment>> commentResult = new MutableLiveData<>();
-
 
     private static final String MY_KEY = "0882850438bd0da4458576be7d4a447c";
     private static final String MY_COUNTRY = "ko-KR";

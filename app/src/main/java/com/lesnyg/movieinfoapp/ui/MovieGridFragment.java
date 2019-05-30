@@ -96,7 +96,18 @@ public class MovieGridFragment extends Fragment {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mModel.fetchUpComing(1);
+                switch (mModel.movieMenu) {
+                    case UPCOMING:
+                        mModel.fetchUpComing(1);
+                        break;
+                    case SORT:
+                        sorting();
+                        break;
+                    case POPULAR:
+                        mModel.fetchPopular(1);
+                        break;
+                }
+
             }
         });
 
@@ -114,12 +125,15 @@ public class MovieGridFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.action_upcomming:
                 mModel.fetchUpComing(1);
+                mModel.movieMenu = MovieViewModel.MovieMenu.UPCOMING;
                 return true;
             case R.id.action_date:
                 sorting();
+                mModel.movieMenu = MovieViewModel.MovieMenu.SORT;
                 return true;
             case R.id.action_popular:
                 mModel.fetchPopular(1);
+                mModel.movieMenu = MovieViewModel.MovieMenu.POPULAR;
                 return true;
         }
         return super.onOptionsItemSelected(item);
