@@ -60,9 +60,9 @@ public class MovieViewModel extends AndroidViewModel {
         return mDb.resultDao().getAll();
     }
 
-    public LiveData<List<Comment>> getComment(int movieId){
-        return mDb.commentDao().commentgetAll(movieId);
-    }
+//    public LiveData<List<Comment>> getComment(int movieId){
+//        return mDb.commentDao().commentgetAll(movieId);
+//    }
 
 
     public void fetchUpComing(int page) {
@@ -155,14 +155,14 @@ public class MovieViewModel extends AndroidViewModel {
         searchResult.setValue(filteredList);
     }
 
-    //한줄평 추가하기
-    public void addComment(Comment comment) {
-        mDb.commentDao().insertComment(comment);
-    }
-
-    //한줄평 삭제하기
-    public void deleteComment(Comment comment) {
-        mDb.commentDao().deleteComment(comment);
-    }
+//    //한줄평 추가하기
+//    public void addComment(Comment comment) {
+//        mDb.commentDao().insertComment(comment);
+//    }
+//
+//    //한줄평 삭제하기
+//    public void deleteComment(Comment comment) {
+//        mDb.commentDao().deleteComment(comment);
+//    }
 }
 

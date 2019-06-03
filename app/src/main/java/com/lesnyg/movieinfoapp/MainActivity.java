@@ -6,9 +6,6 @@ import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.lesnyg.movieinfoapp.ui.FavoritesListFragment;
 import com.lesnyg.movieinfoapp.ui.MovieGridFragment;

@@ -8,7 +8,7 @@ android {
         applicationId "com.lesnyg.movieinfoapp"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 2
+        versionCode 4
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -63,5 +63,7 @@ dependencies {
 
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
 
+    // FirebaseUI for Cloud Firestore
+    implementation 'com.firebaseui:firebase-ui-firestore:5.0.0'
 
 }

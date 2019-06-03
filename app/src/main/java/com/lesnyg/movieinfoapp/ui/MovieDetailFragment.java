@@ -4,7 +4,6 @@ package com.lesnyg.movieinfoapp.ui;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,10 +22,16 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.lesnyg.movieinfoapp.AlarmReceiver;
 import com.lesnyg.movieinfoapp.CounterViewModel;
 import com.lesnyg.movieinfoapp.MovieViewModel;
@@ -37,14 +41,12 @@ import com.lesnyg.movieinfoapp.adapter.CommentAdapter;
 import com.lesnyg.movieinfoapp.databinding.FragmentMovieDetailBinding;
 import com.lesnyg.movieinfoapp.models.Comment;
 import com.lesnyg.movieinfoapp.models.Result;
-import com.lesnyg.movieinfoapp.repository.AppDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SplittableRandom;
 
 import static android.content.Context.ALARM_SERVICE;
 
@@ -56,6 +58,8 @@ public class MovieDetailFragment extends Fragment {
     private FragmentMovieDetailBinding mBinding;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static final String TAG = MovieDetailFragment.class.getSimpleName();
+    private CommentAdapter mAdapter;
+
     public MovieDetailFragment() {
         setHasOptionsMenu(true);
     }
@@ -110,60 +114,31 @@ public class MovieDetailFragment extends Fragment {
         });
         mBinding.setLifecycleOwner(this);
 
-//        mBinding.textCommentBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mBinding.layoutComment.setVisibility(View.VISIBLE);
-//            }
-//        });
+        Query query = FirebaseFirestore.getInstance()
+                .collection("comment")
+                .whereEqualTo("movieId",mResult.getId());
+
+        FirestoreRecyclerOptions<Comment> options = new FirestoreRecyclerOptions.Builder<Comment>()
+                .setQuery(query, Comment.class)
+                .build();
+
+
 
         RecyclerView recyclerView = view.findViewById(R.id.comment_recycler);
-        CommentAdapter adapter = new CommentAdapter();
-        recyclerView.setAdapter(adapter);
+        mAdapter = new CommentAdapter(options);
+        recyclerView.setAdapter(mAdapter);
 
         mBinding.btnCommentAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Comment comment = new Comment();
-//                comment.setComment(mBinding.editComment.getText().toString());
-//                comment.setMovieId(mResult.getId());
-////                AppDatabase.getInstance(requireActivity()).commentDao().insertComment(
-////                        comment);
-//                mModel.addComment(comment);
-//                mBinding.editComment.setText("");
-
                 Map<String, Object> user = new HashMap<>();
-                user.put("oneLineComment", mBinding.editComment.getText().toString());
+                user.put("comment", mBinding.editComment.getText().toString());
                 user.put("movieId", mResult.getId());
 
-                db.collection("comment")
-                        .add(user)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w(TAG, "Error adding document", e);
-                            }
-                        });
+                db.collection("comment").add(user);
             }
         });
 
-
-
-
-        mModel.getComment(mResult.getId()).observe(requireActivity(), new Observer<List<Comment>>() {
-            @Override
-            public void onChanged(List<Comment> comment) {
-                mModel.comments = comment;
-                adapter.updatecomment(comment);
-                mModel.commentResult.setValue(mModel.comments);
-            }
-        });
 
         view.findViewById(R.id.booking_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,7 +149,24 @@ public class MovieDetailFragment extends Fragment {
         });
 
 
+
+
+
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAdapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mAdapter.stopListening();
+    }
+
+
 
 
     @Override

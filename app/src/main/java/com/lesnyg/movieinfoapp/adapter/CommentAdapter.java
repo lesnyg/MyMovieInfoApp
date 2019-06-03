@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.lesnyg.movieinfoapp.R;
 import com.lesnyg.movieinfoapp.databinding.ItemCommentBinding;
 import com.lesnyg.movieinfoapp.models.Comment;
@@ -14,13 +16,18 @@ import com.lesnyg.movieinfoapp.models.Comment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
-
+public class CommentAdapter extends FirestoreRecyclerAdapter<Comment, CommentAdapter.CommentViewHolder> {
     private List<Comment> mItems = new ArrayList<>();
 
-    public CommentAdapter() {
+    /**
+     * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
+     * FirestoreRecyclerOptions} for configuration options.
+     *
+     * @param options
+     */
+    public CommentAdapter(@NonNull FirestoreRecyclerOptions<Comment> options) {
+        super(options);
     }
-
 
     public void setItems(List<Comment> items) {
         this.mItems = items;
@@ -33,25 +40,16 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         notifyDataSetChanged();
     }
 
+    @Override
+    protected void onBindViewHolder(@NonNull CommentViewHolder commentViewHolder, int i, @NonNull Comment comment) {
+        commentViewHolder.binding.setComment(getItem(i));
+    }
+
     @NonNull
     @Override
     public CommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_comment, parent, false);
-        final CommentViewHolder viewHolder = new CommentViewHolder(view);
-
-        return viewHolder;
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
-        Comment item = mItems.get(position);
-        holder.binding.setComment(item);
-    }
-
-    @Override
-    public int getItemCount() {
-        return mItems.size();
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_comment,parent,false);
+        return new CommentViewHolder(view);
     }
 
     public static class CommentViewHolder extends RecyclerView.ViewHolder {
