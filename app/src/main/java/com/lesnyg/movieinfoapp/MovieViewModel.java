@@ -1,6 +1,8 @@
 package com.lesnyg.movieinfoapp;
 
 import android.app.Application;
+import android.content.Context;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -15,6 +17,7 @@ import com.lesnyg.movieinfoapp.repository.AppDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,7 +37,6 @@ public class MovieViewModel extends AndroidViewModel {
     public MutableLiveData<List<Comment>> commentResult = new MutableLiveData<>();
 
     private static final String MY_KEY = "0882850438bd0da4458576be7d4a447c";
-    private static final String MY_COUNTRY = "ko-KR";
     public List<Result> results;    //
     public List<Comment> comments;
     private List<Result> mResults = new ArrayList<>();
@@ -56,6 +58,17 @@ public class MovieViewModel extends AndroidViewModel {
                 .build();
     }
 
+    Locale getCurrentLocale(Context context){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+            return context.getResources().getConfiguration().getLocales().get(0);
+        } else{
+            //noinspection deprecation
+            return context.getResources().getConfiguration().locale;
+        }
+    }
+
+    String local = getCurrentLocale(getApplication()).getLanguage()+"-"+getCurrentLocale(getApplication());
+
     public LiveData<List<Result>> getFavorite() {
         return mDb.resultDao().getAll();
     }
@@ -66,7 +79,7 @@ public class MovieViewModel extends AndroidViewModel {
 
 
     public void fetchUpComing(int page) {
-        service.getUpComing(MY_KEY, MY_COUNTRY, page).enqueue(new Callback<Search>() {
+        service.getUpComing(MY_KEY, local, page).enqueue(new Callback<Search>() {
             @Override
             public void onResponse(Call<Search> call, Response<Search> response) {
                 if (response.body() != null) {
@@ -91,7 +104,7 @@ public class MovieViewModel extends AndroidViewModel {
     }
 
     public void fetchPopular(int page) {
-        service.getPopular(MY_KEY, MY_COUNTRY, page).enqueue(new Callback<Search>() {
+        service.getPopular(MY_KEY, local, page).enqueue(new Callback<Search>() {
             @Override
             public void onResponse(Call<Search> call, Response<Search> response) {
                 if (response.body() != null) {
@@ -116,7 +129,7 @@ public class MovieViewModel extends AndroidViewModel {
     }
 
     public void fetchSearch(String quary) {
-        service.getSearch(MY_KEY, quary, MY_COUNTRY).enqueue(new Callback<Search>() {
+        service.getSearch(MY_KEY, quary, local).enqueue(new Callback<Search>() {
             @Override
             public void onResponse(Call<Search> call, Response<Search> response) {
                 if (response.body() != null) {
@@ -154,15 +167,5 @@ public class MovieViewModel extends AndroidViewModel {
         }
         searchResult.setValue(filteredList);
     }
-
-//    //한줄평 추가하기
-//    public void addComment(Comment comment) {
-//        mDb.commentDao().insertComment(comment);
-//    }
-//
-//    //한줄평 삭제하기
-//    public void deleteComment(Comment comment) {
-//        mDb.commentDao().deleteComment(comment);
-//    }
 }
 
